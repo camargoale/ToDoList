@@ -15,12 +15,21 @@ class CadastroTarefa : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cadastro_tarefa)
 
+        val tarefa: String? = intent.getStringExtra(EXTRA_NOVA_TAREFA)
+        if(tarefa!=null){
+            carregaDados(tarefa)
+        }
+
         saveButton.setOnClickListener {
             val x = Intent()
             x.putExtra(EXTRA_NOVA_TAREFA,inserido.text.toString())
             setResult(Activity.RESULT_OK, x)
             finish()
         }
+    }
+
+    private fun carregaDados(tarefa: String) {
+        inserido.setText(tarefa)
     }
 
 }

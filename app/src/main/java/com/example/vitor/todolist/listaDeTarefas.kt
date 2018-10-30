@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_lista_de_tarefas.*
 import java.util.ArrayList
@@ -12,15 +11,19 @@ import java.util.ArrayList
 class listaDeTarefas : AppCompatActivity() {
 
     companion object {
+        public const val TARFA: String = "tarefa" //para putExtra entre activities
         private const val REQUEST_CADASTRO: Int = 1
         private const val LISTA: String = "ListaTarefas"
     }
 
     private var tarefasList: MutableList<String> = mutableListOf()
+    var indexTarefaClicada: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lista_de_tarefas)
+
+
 
         btnAddTarefa.setOnClickListener(){
             val cadastrarTarefa = Intent(this,CadastroTarefa::class.java)
@@ -31,9 +34,13 @@ class listaDeTarefas : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(requestCode == REQUEST_CADASTRO && resultCode == Activity.RESULT_OK){
-            val novaTarefa: String? = data?.getStringExtra(CadastroTarefa.EXTRA_NOVA_TAREFA)
-            if (novaTarefa != null) {
-                tarefasList.add(novaTarefa)
+            val Tarefa: String? = data?.getStringExtra(CadastroTarefa.EXTRA_NOVA_TAREFA)
+            if (Tarefa != null) {
+                if (indexTarefaClicada >= 0){
+                    tarefasList.set(indexTarefaClicada, Tarefa)
+                    indexTarefaClicada = -1
+                }else{
+                tarefasList.add(Tarefa)}
             }
         }
     }
@@ -59,13 +66,20 @@ class listaDeTarefas : AppCompatActivity() {
     }
 
     fun carregaLista() {
-        val adapter = TarefaAdapter(tarefasList)
+        val adapter = TarefaAdapter(this, tarefasList)
+
+        adapter.setOnItemClickListener {tarefa, indexTarefaClicada ->
+            this.indexTarefaClicada = indexTarefaClicada
+            val editaTarefa = Intent(this, CadastroTarefa::class.java)
+            editaTarefa.putExtra(CadastroTarefa.EXTRA_NOVA_TAREFA, tarefa)
+            this.startActivityForResult(editaTarefa, REQUEST_CADASTRO)
+        }
+
+
         val layoutManager = LinearLayoutManager(this)
-        val dividerItemDecoration = DividerItemDecoration(this, layoutManager.orientation)
 
         rvTarefa.adapter = adapter
         rvTarefa.layoutManager = layoutManager
-        rvTarefa.addItemDecoration(dividerItemDecoration)
     }
 
 }
