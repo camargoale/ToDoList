@@ -11,12 +11,11 @@ import java.util.ArrayList
 class listaDeTarefas : AppCompatActivity() {
 
     companion object {
-        public const val TARFA: String = "tarefa" //para putExtra entre activities
         private const val REQUEST_CADASTRO: Int = 1
         private const val LISTA: String = "ListaTarefas"
     }
 
-    private var tarefasList: MutableList<String> = mutableListOf()
+    private var tarefasList: MutableList<Tarefa> = mutableListOf()
     var indexTarefaClicada: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +33,7 @@ class listaDeTarefas : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(requestCode == REQUEST_CADASTRO && resultCode == Activity.RESULT_OK){
-            val Tarefa: String? = data?.getStringExtra(CadastroTarefa.EXTRA_NOVA_TAREFA)
+            val Tarefa: Tarefa? = data?.getSerializableExtra(CadastroTarefa.EXTRA_NOVA_TAREFA) as Tarefa
             if (Tarefa != null) {
                 if (indexTarefaClicada >= 0){
                     tarefasList.set(indexTarefaClicada, Tarefa)
@@ -62,7 +61,7 @@ class listaDeTarefas : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
 
         if(savedInstanceState != null)
-            tarefasList = savedInstanceState.getStringArrayList(LISTA).toMutableList()
+            tarefasList = savedInstanceState.getSerializable(LISTA) as MutableList<Tarefa>
     }
 
     fun carregaLista() {

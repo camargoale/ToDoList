@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import android.view.LayoutInflater
 import kotlinx.android.synthetic.main.activity_item_lista.view.*
 
-class TarefaAdapter(val context: Context, val tarefas: List<String>)
+class TarefaAdapter(val context: Context, val tarefas: List<Tarefa>)
     : RecyclerView.Adapter<TarefaAdapter.ViewHolder>() {
 
-    var clickListener : ((tarefa:String, index: Int) -> Unit)? = null
+    var clickListener : ((tarefa:Tarefa, index: Int) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.activity_item_lista, parent, false)
@@ -25,13 +25,13 @@ class TarefaAdapter(val context: Context, val tarefas: List<String>)
         holder.bindView(context, tarefas[position], clickListener)
     }
 
-    fun setOnItemClickListener(clique: ((tarefa:String, index: Int) -> Unit)) {
+    fun setOnItemClickListener(clique: ((tarefa:Tarefa, index: Int) -> Unit)) {
         this.clickListener = clique
     }
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bindView(context: Context, taskNome: String, clickListener: ((tarefa:String, index: Int) -> Unit)?) {
-            itemView.tvtarefa.text = taskNome
+        fun bindView(context: Context, taskNome: Tarefa, clickListener: ((tarefa:Tarefa, index: Int) -> Unit)?) {
+            itemView.tvtarefa.text = taskNome.task
 
             if(clickListener != null){
                 itemView.setOnClickListener{

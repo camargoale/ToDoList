@@ -15,7 +15,7 @@ class CadastroTarefa : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cadastro_tarefa)
 
-        val tarefa: String? = intent.getStringExtra(EXTRA_NOVA_TAREFA)
+        val tarefa: Tarefa? = intent.getSerializableExtra(EXTRA_NOVA_TAREFA) as Tarefa?
         if(tarefa!=null){
             carregaDados(tarefa)
         }
@@ -28,8 +28,8 @@ class CadastroTarefa : AppCompatActivity() {
         }
     }
 
-    private fun carregaDados(tarefa: String) {
-        inserido.setText(tarefa)
+    private fun carregaDados(tarefa: Tarefa) {
+        inserido.setText(tarefa.task)
     }
 
 }
