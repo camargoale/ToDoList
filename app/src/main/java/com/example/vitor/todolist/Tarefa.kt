@@ -1,5 +1,10 @@
 package com.example.vitor.todolist
 
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 import java.io.Serializable
 
-data class Tarefa(val task: String) : Serializable
+@Entity
+data class Tarefa(var task: String,
+                  @PrimaryKey (autoGenerate = true)
+                  var id: Int = 0) : Serializable

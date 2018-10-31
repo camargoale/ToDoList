@@ -6,6 +6,9 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_lista_de_tarefas.*
+import org.jetbrains.anko.activityUiThreadWithContext
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import java.util.ArrayList
 
 class listaDeTarefas : AppCompatActivity() {
@@ -16,7 +19,7 @@ class listaDeTarefas : AppCompatActivity() {
     }
 
     private var tarefasList: MutableList<Tarefa> = mutableListOf()
-    var indexTarefaClicada: Int = -1
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,23 +29,12 @@ class listaDeTarefas : AppCompatActivity() {
 
         btnAddTarefa.setOnClickListener(){
             val cadastrarTarefa = Intent(this,CadastroTarefa::class.java)
-            startActivityForResult(cadastrarTarefa, REQUEST_CADASTRO)
+            startActivity(cadastrarTarefa)
         }
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(requestCode == REQUEST_CADASTRO && resultCode == Activity.RESULT_OK){
-            val Tarefa: Tarefa? = data?.getSerializableExtra(CadastroTarefa.EXTRA_NOVA_TAREFA) as Tarefa
-            if (Tarefa != null) {
-                if (indexTarefaClicada >= 0){
-                    tarefasList.set(indexTarefaClicada, Tarefa)
-                    indexTarefaClicada = -1
-                }else{
-                tarefasList.add(Tarefa)}
-            }
-        }
-    }
+
 
     override fun onResume() {
         super.onResume()
@@ -65,10 +57,28 @@ class listaDeTarefas : AppCompatActivity() {
     }
 
     fun carregaLista() {
+
+        val TarefaDao = AppDatabase.getInstance(this).TarefaDao()
+        doAsync{
+        tarefasList = TarefaDao.getAll() as MutableList<Tarefa>
+            activityUiThreadWithContext {
+                val adapter = TarefaAdapter(this, tarefasList)
+
+                adapter.setOnItemClickListener {tarefa, indexTarefaClicada ->
+                    val editaTarefa = Intent(this, CadastroTarefa::class.java)
+                    editaTarefa.putExtra(CadastroTarefa.EXTRA_NOVA_TAREFA, tarefa)
+                    startActivity(editaTarefa)
+                }
+
+                val layoutManager = LinearLayoutManager(this)
+
+                rvTarefa.adapter = adapter
+                rvTarefa.layoutManager = layoutManager
+            }}
+
         val adapter = TarefaAdapter(this, tarefasList)
 
         adapter.setOnItemClickListener {tarefa, indexTarefaClicada ->
-            this.indexTarefaClicada = indexTarefaClicada
             val editaTarefa = Intent(this, CadastroTarefa::class.java)
             editaTarefa.putExtra(CadastroTarefa.EXTRA_NOVA_TAREFA, tarefa)
             this.startActivityForResult(editaTarefa, REQUEST_CADASTRO)
