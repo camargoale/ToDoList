@@ -1,8 +1,10 @@
-package com.example.vitor.todolist
+package com.example.vitor.todolist.cenario.cenario_cadastra_tarefa
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
+import com.example.vitor.todolist.R
+import com.example.vitor.todolist.entidades.Tarefa
 import kotlinx.android.synthetic.main.activity_cadastro_tarefa.*
 
 class CadastroTarefa : AppCompatActivity(), CadastraTarefaContract.View {

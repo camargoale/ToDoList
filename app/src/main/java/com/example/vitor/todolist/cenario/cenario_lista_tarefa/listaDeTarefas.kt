@@ -1,12 +1,13 @@
-package com.example.vitor.todolist
+package com.example.vitor.todolist.cenario.cenario_lista_tarefa
 
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import com.example.vitor.todolist.R
+import com.example.vitor.todolist.entidades.Tarefa
+import com.example.vitor.todolist.cenario.cenario_cadastra_tarefa.CadastroTarefa
 import kotlinx.android.synthetic.main.activity_lista_de_tarefas.*
-import org.jetbrains.anko.activityUiThreadWithContext
-import org.jetbrains.anko.doAsync
 import java.util.ArrayList
 
 class listaDeTarefas : AppCompatActivity(), listaDeTarefasContract.view {

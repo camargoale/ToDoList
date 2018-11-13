@@ -1,6 +1,7 @@
-package com.example.vitor.todolist
+package com.example.vitor.todolist.database
 
 import android.arch.persistence.room.*
+import com.example.vitor.todolist.entidades.Tarefa
 
 @Dao
 interface TarefaDao {

@@ -1,4 +1,4 @@
-package com.example.vitor.todolist
+package com.example.vitor.todolist.entidades
 
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey

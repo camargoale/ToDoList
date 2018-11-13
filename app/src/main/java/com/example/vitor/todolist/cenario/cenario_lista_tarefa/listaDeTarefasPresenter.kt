@@ -1,6 +1,8 @@
-package com.example.vitor.todolist
+package com.example.vitor.todolist.cenario.cenario_lista_tarefa
 
 import android.content.Context
+import com.example.vitor.todolist.database.AppDatabase
+import com.example.vitor.todolist.entidades.Tarefa
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
