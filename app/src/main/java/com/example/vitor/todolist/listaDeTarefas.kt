@@ -1,6 +1,5 @@
 package com.example.vitor.todolist
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -8,10 +7,9 @@ import android.support.v7.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_lista_de_tarefas.*
 import org.jetbrains.anko.activityUiThreadWithContext
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
 import java.util.ArrayList
 
-class listaDeTarefas : AppCompatActivity() {
+class listaDeTarefas : AppCompatActivity(), listaDeTarefasContract.view {
 
     companion object {
         private const val REQUEST_CADASTRO: Int = 1
@@ -20,13 +18,14 @@ class listaDeTarefas : AppCompatActivity() {
 
     private var tarefasList: MutableList<Tarefa> = mutableListOf()
 
+    val presenter: listaDeTarefasContract.presenter = listaDeTarefasPresenter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lista_de_tarefas)
 
-        btnAddTarefa.setOnClickListener(){
-            val cadastrarTarefa = Intent(this,CadastroTarefa::class.java)
+        btnAddTarefa.setOnClickListener() {
+            val cadastrarTarefa = Intent(this, CadastroTarefa::class.java)
             startActivity(cadastrarTarefa)
         }
 
@@ -34,7 +33,7 @@ class listaDeTarefas : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        carregaLista()
+        presenter.onAtualizaLista(this)
 
     }
 
@@ -48,47 +47,25 @@ class listaDeTarefas : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
 
-        if(savedInstanceState != null)
+        if (savedInstanceState != null)
             tarefasList = savedInstanceState.getSerializable(LISTA) as MutableList<Tarefa>
     }
 
-    fun carregaLista() {
+    override fun exibeLista(lista: MutableList<Tarefa>) {
 
-        val TarefaDao = AppDatabase.getInstance(this).TarefaDao()
-        doAsync{
-
-            tarefasList = TarefaDao.getAll() as MutableList<Tarefa>
-
-            activityUiThreadWithContext {
-
-                val adapter = TarefaAdapter(this, tarefasList)
-
-                adapter.setOnItemClickListener {tarefa, indexTarefaClicada ->
-                    val editaTarefa = Intent(this, CadastroTarefa::class.java)
-                    editaTarefa.putExtra(CadastroTarefa.EXTRA_NOVA_TAREFA, tarefa)
-                    startActivity(editaTarefa)
-                }
-
-                val layoutManager = LinearLayoutManager(this)
-
-                rvTarefa.adapter = adapter
-                rvTarefa.layoutManager = layoutManager
-            }
-        }
+        tarefasList = lista
 
         val adapter = TarefaAdapter(this, tarefasList)
 
-        adapter.setOnItemClickListener {tarefa, indexTarefaClicada ->
+        adapter.setOnItemClickListener { tarefa, indexTarefaClicada ->
             val editaTarefa = Intent(this, CadastroTarefa::class.java)
             editaTarefa.putExtra(CadastroTarefa.EXTRA_NOVA_TAREFA, tarefa)
-            this.startActivityForResult(editaTarefa, REQUEST_CADASTRO)
+            startActivity(editaTarefa)
         }
-
 
         val layoutManager = LinearLayoutManager(this)
 
         rvTarefa.adapter = adapter
         rvTarefa.layoutManager = layoutManager
     }
-
 }
