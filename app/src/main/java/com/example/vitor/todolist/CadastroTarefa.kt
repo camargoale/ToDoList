@@ -5,6 +5,8 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_cadastro_tarefa.*
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 
 class CadastroTarefa : AppCompatActivity() {
 
@@ -24,11 +26,19 @@ class CadastroTarefa : AppCompatActivity() {
         }
 
         saveButton.setOnClickListener {
-            val x = Intent()
-            val todo = Tarefa(inserido.text.toString())
-            x.putExtra(EXTRA_NOVA_TAREFA,todo)
-            setResult(Activity.RESULT_OK, x)
-            finish()
+            if (tarefa == null){
+                tarefa = Tarefa(inserido.text.toString())
+            } else {
+                tarefa?.task = inserido.text.toString()
+            }
+
+            val tarefaDao: TarefaDao = AppDatabase.getInstance(this).TarefaDao()
+            doAsync {
+                tarefaDao.insert(tarefa!!)
+                uiThread {
+                    finish()
+                }
+            }
         }
     }
 

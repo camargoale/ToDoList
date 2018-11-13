@@ -25,16 +25,12 @@ class listaDeTarefas : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lista_de_tarefas)
 
-
-
         btnAddTarefa.setOnClickListener(){
             val cadastrarTarefa = Intent(this,CadastroTarefa::class.java)
             startActivity(cadastrarTarefa)
         }
 
     }
-
-
 
     override fun onResume() {
         super.onResume()
@@ -60,8 +56,11 @@ class listaDeTarefas : AppCompatActivity() {
 
         val TarefaDao = AppDatabase.getInstance(this).TarefaDao()
         doAsync{
-        tarefasList = TarefaDao.getAll() as MutableList<Tarefa>
+
+            tarefasList = TarefaDao.getAll() as MutableList<Tarefa>
+
             activityUiThreadWithContext {
+
                 val adapter = TarefaAdapter(this, tarefasList)
 
                 adapter.setOnItemClickListener {tarefa, indexTarefaClicada ->
@@ -74,7 +73,8 @@ class listaDeTarefas : AppCompatActivity() {
 
                 rvTarefa.adapter = adapter
                 rvTarefa.layoutManager = layoutManager
-            }}
+            }
+        }
 
         val adapter = TarefaAdapter(this, tarefasList)
 
